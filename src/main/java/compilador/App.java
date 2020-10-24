@@ -11,19 +11,30 @@ import java.util.regex.Matcher;
 
 // [[file:App.org::*number][number:1]]
 class Arithmetic {
-    public enum Keywords = {};
+    public enum Keywords {};
 
-    public void tokenzine(String code) {
+    public static String tokenize(String code) throws  {
         Pattern pattern = Pattern.compile("\\d+");
+        String matches[];
         Matcher matcher = pattern.matcher(code);
+        while (matcher.find()) {
+            matches.append(matcher.group());
+        }
+        if (matches.length == 0) {
+            throw Exception;
+        }
     }
 
     public static void main(String[] args) {
-        if (args.length > 1) {
-            Path path = Paths.get(args[1]);
-        } else {
-            System.out.println("No filename provided.");
+        // It will only accept one file.
+        if (args.length != 1) {
+            System.out.println("Wrong number of parameters provided.");
+            return;
         }
+
+        System.out.println(tokenize(args[0]));
+
+        Path path = Paths.get(args[0]);
         String text;
         try {
             text = String.join("\n", Files.readAllLines(path));
