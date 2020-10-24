@@ -1,4 +1,7 @@
-// [[file:App.org::*imports][imports:1]]
+#+property: header-args :tangle App.java :comments link
+
+* imports
+#+begin_src java :noweb-ref imports
 package compilador;
 
 import java.nio.file.Path;
@@ -7,9 +10,10 @@ import java.nio.file.Paths;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.regex.Matcher;
-// imports:1 ends here
+#+end_src
 
-// [[file:App.org::*number][number:1]]
+* number
+#+begin_src java :noweb-ref Arithmetic
 class Arithmetic {
     public enum Keywords = {};
 
@@ -35,12 +39,24 @@ class Arithmetic {
 
     }
 }
-// number:1 ends here
+#+end_src
 
-// [[file:App.org::*number][number:2]]
+#+begin_src java :noweb-ref App
 public class App {
     public static void main( String[] args ) {
         System.out.println("Hello World!");
     }
 }
-// number:2 ends here
+#+end_src
+** tokenizer
+#+begin_src
+[a-zA-Z_]
+/^
+(\w+ )+ # keyword in var/function declaration
+ +
+(IDENTIFIER) # varname
+ *
+(= *(?EXPR))
+;$
+/
+#+end_src
