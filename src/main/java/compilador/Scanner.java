@@ -1,7 +1,4 @@
-#+property: header-args :tangle App.java :comments link
-
-* imports
-#+begin_src java :noweb-ref imports
+// [[file:Scanner.org::*imports][imports:1]]
 package compilador;
 
 import java.nio.file.Path;
@@ -10,24 +7,24 @@ import java.nio.file.Paths;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.regex.Matcher;
-#+end_src
+import java.text.ParseException;
+// imports:1 ends here
 
-* number
-- Which exceptions should be thrown?
-#+begin_src java :noweb-ref Arithmetic
-class Arithmetic {
+// [[file:Scanner.org::*number][number:1]]
+class Scanner {
     public enum Keywords {};
 
-    public static String tokenize(String code) throws  {
+    public static String[] tokenize(String code) throws ParseException  {
         Pattern pattern = Pattern.compile("\\d+");
         String matches[];
         Matcher matcher = pattern.matcher(code);
         while (matcher.find()) {
-            matches.append(matcher.group());
+            matches.add(matcher.group());
         }
-        if (matches.length == 0) {
-            throw Exception;
-        }
+        // if (matches.length == 0) {
+        //     return ParseException;
+        // }
+        return matches;
     }
 
     public static void main(String[] args) {
@@ -51,24 +48,4 @@ class Arithmetic {
 
     }
 }
-#+end_src
-
-#+begin_src java :noweb-ref App
-public class App {
-    public static void main( String[] args ) {
-        System.out.println("Hello World!");
-    }
-}
-#+end_src
-** tokenizer
-#+begin_src
-[a-zA-Z_]
-/^
-(\w+ )+ # keyword in var/function declaration
- +
-(IDENTIFIER) # varname
- *
-(= *(?EXPR))
-;$
-/
-#+end_src
+// number:1 ends here
