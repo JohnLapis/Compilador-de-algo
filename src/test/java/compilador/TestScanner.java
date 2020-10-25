@@ -13,16 +13,8 @@ import org.junit.runners.Suite;
 import java.util.Collection;
 
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-        TestArithmetic.class,
-            })
-public class TestScanner {
-
-}
-
 @RunWith(Parameterized.class)
-class TestArithmetic {
+public class TestScanner {
     @Parameters
     public static List data() {
         return Arrays.asList(
