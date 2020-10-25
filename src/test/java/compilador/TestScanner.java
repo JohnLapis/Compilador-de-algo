@@ -1,22 +1,39 @@
 package compilador;
 
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
 import java.util.Arrays;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameter;
-import org.junit.runners.Parameterized.Parameters;
 import java.util.List;
 import java.util.ArrayList;
-import org.junit.runners.Suite;
 import java.util.Collection;
 
+import junitparams.*;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-@RunWith(Parameterized.class)
+
+import static junitparams.JUnitParamsRunner.*;
+import static org.junit.Assert.assertEquals;
+
+@RunWith(JUnitParamsRunner.class)
 public class TestScanner {
-    @Parameters
-    public static Collection<Object[]> data() {
+    // @Parameter
+    // public String input;
+    // @Parameter(1)
+    // public List<String> expected; // = new ArrayList<String>();
+
+    @Test
+    @Parameters(method = "arithmeticValues")
+    public void testArithmetic(String input, List<String> expected) {
+        System.out.println(input);
+
+        // try {
+        //     assertEquals(Scanner.tokenize(input), expected);
+        // } catch (Throwable e) {
+        //     System.out.println("Error " + e.getMessage());
+        //     e.printStackTrace();
+        // }
+    }
+
+    public static Collection<Object[]> arithmeticValues() {
         return Arrays.asList(new Object[][] {
                 { "44 + 845", Arrays.asList("44", "845") },
                 { "44 + 845", Arrays.asList("44", "845") },
@@ -25,19 +42,4 @@ public class TestScanner {
             });
     }
 
-    @Parameter
-    public String input;
-
-    @Parameter(1)
-    public List<String> expected; // = new ArrayList<String>();
-
-    @Test
-    public void testArithmetic() {
-        try {
-            assertEquals(Scanner.tokenize(input), expected);
-        } catch (Throwable e) {
-            System.out.println("Error " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
 }
