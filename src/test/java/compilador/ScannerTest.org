@@ -20,22 +20,24 @@ import static junitparams.JUnitParamsRunner.*;
 import static org.junit.Assert.assertEquals;
 #+end_src
 
+* Mapper
+#+begin_src java :noweb-ref Mapper
+class XMLMapper implements DataMapper {
+    static Object[] map(Reader reader) {
+        Document data = DocumentBuilder.parse(reader.read());
+        return getElementsByTagName("codeSamples")[0]
+            .getElementsByTagName("code")
+            .stream()
+            .map((element) -> getTextContent(element));
+     }
+}
+#+end_src
 * ScannerTest
 
 #+begin_src java :noweb-ref ScannerTest
 @RunWith(JUnitParamsRunner.class)
 public class ScannerTest {
-    private String loadFile(Path filename) {
-        try {
-            return String.join("\n", Files.readAllLines(filename));
-        } catch (IOException e) {
-            System.out.println("Error " + e.getMessage());
-            e.printStackTrace();
-            throw e;
-        }
-     }
-
-    private Path director = Path.get("fixtures");
+    private Path fixtureDirectory = Path.get("fixtures");
 
     @BeforeClass
     private void setUp() {
@@ -43,16 +45,19 @@ public class ScannerTest {
         //              load file into property
 
 
-        //              and then make _____Values() use the property
-        for (Path filename : directory.listFiles()) {
-            this.filename = loadFile(filename);
-        }
+        //              and then make _____Values() use the attribute
+        // for (Path filename : directory.listFiles()) {
+        //     this.filename = loadFile(filename);
+        // }
 
-     }
+    }
 
     @Test
-    @FileParameters(value = "src/test/java/compilador/fixtures", mapper = CsvWithHeaderMapper.class)
+    @FileParameters(value = "src/test/java/compilador/fixtures/expression.xml", mapper = XMLMapper.class)
     public void testTokenzine(String input, List<String> expected) {
+        System.out.println(input);
+        System.out.println(expected);
+
         try {
             assertEquals(Scanner.tokenize(input), expected);
         } catch (Throwable e) {
