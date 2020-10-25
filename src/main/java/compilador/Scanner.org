@@ -11,43 +11,22 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 #+end_src
 
-* number
+* scanner
 - Which exceptions should be thrown? Myb create a custom one
+- ArrayList initial capacity is 10. It maybe should set higher.
 #+begin_src java :noweb-ref Scanner
 class Scanner {
-  public enum Keywords {};
+    public enum Keywords {};
 
-  public static List<String> tokenize(String code) throws ParseException {
-    Pattern pattern = Pattern.compile("\\d+");
-    Matcher matcher = pattern.matcher(code);
-    List<String> matches = new ArrayList<String>();
-    while (matcher.find()) {
-      matches.add(matcher.group());
+    public static List<String> tokenize(String code) throws ParseException {
+        Pattern pattern = Pattern.compile("\\d+");
+        Matcher matcher = pattern.matcher(code);
+        List<String> matches = new ArrayList<String>();
+        while (matcher.find()) {
+            matches.add(matcher.group());
+        }
+        return matches;
     }
-    return matches;
-  }
-#+end_src
-
-#+begin_src java :noweb-ref Scanner
-  public static void main(String[] args) {
-    // It will only accept one file.
-    if (args.length != 1) {
-      System.out.println("Wrong number of parameters provided.");
-      return;
-    }
-
-    Path path = Paths.get(args[0]);
-    String code;
-    try {
-        code = String.join("\n", Files.readAllLines(path));
-    } catch (IOException e) {
-        System.out.println("Error " + e.getMessage());
-        e.printStackTrace();
-        return;
-    }
-    System.out.println("[ " + String.join(", ", tokenize(code)) + " ]");
-
-  }
 }
 #+end_src
 

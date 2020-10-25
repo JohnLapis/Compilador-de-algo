@@ -8,7 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 // imports:1 ends here
 
-// [[file:Scanner.org::*number][number:1]]
+// [[file:Scanner.org::*scanner][scanner:1]]
 class Scanner {
     public enum Keywords {};
 
@@ -21,27 +21,5 @@ class Scanner {
         }
         return matches;
     }
-    // number:1 ends here
-
-    // [[file:Scanner.org::*number][number:2]]
-    public static void main(String[] args) {
-        // It will only accept one file.
-        if (args.length != 1) {
-            System.out.println("Wrong number of parameters provided.");
-            return;
-        }
-
-        Path path = Paths.get(args[0]);
-        String code;
-        try {
-            code = String.join("\n", Files.readAllLines(path));
-        } catch (IOException e) {
-            System.out.println("Error " + e.getMessage());
-            e.printStackTrace();
-            return;
-        }
-        System.out.println("[ " + String.join(", ", tokenize(code)) + " ]");
-
-    }
 }
-// number:2 ends here
+// scanner:1 ends here
