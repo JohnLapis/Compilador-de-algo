@@ -30,10 +30,9 @@ public class TestScanner {
 
     public static Collection<Object[]> arithmeticValues() {
         return Arrays.asList(new Object[][] {
-                { "44 + 845", Arrays.asList("44", "845") },
-                { "44 + 845", Arrays.asList("44", "845") },
-                { "44 + 845 * (885 - 33 / 5) ** 9", Arrays.asList("44", "+", "845", "*", "(", "885", "-", "33", "/", "5", ")", "9") },
-                { "44 + a * (b) ** 9", Arrays.asList("44", "+", "a", "*", "(", "b", "-", "33", "/", "5", ")", "9") }
+                { "44 + 845", Arrays.asList("44", "+", "845") },
+                { "44 + 845 * (885 - 33 / 5) ** 9", Arrays.asList("44", "+", "845", "*", "(", "885", "-", "33", "/", "5", ")", "**", "9") },
+                { "44 + a * (b) ** 9", Arrays.asList("44", "+", "a", "*", "(", "b", ")", "**", "9") }
             });
     }
 
