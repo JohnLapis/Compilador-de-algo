@@ -7,8 +7,7 @@ import java.util.Arrays;
 public class TestScanner {
     @Test
     public void number() {
-        System.out.println(Arrays.toString(Scanner.main("44 + 55")));
-        System.out.println(Arrays.toString(Scanner.main("44")));
-        System.out.println(Arrays.toString(Scanner.main("44")));
+        String params[] = {"44 + 856", "60", ""};
+        assert(tokenize("44 + 845") == {"44", "845"})
     }
 }
