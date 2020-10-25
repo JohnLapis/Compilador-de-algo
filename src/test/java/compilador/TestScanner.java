@@ -24,14 +24,12 @@ public class TestScanner {
 @RunWith(Parameterized.class)
 class TestArithmetic {
     @Parameters
-    public List data() {
-        List parameters =
-            Arrays.asList(
+    public static List data() {
+        return Arrays.asList(
                           Arrays.asList("44 + 845", Arrays.asList("44", "845")),
                           Arrays.asList("44 + 845 * (885 - 33 / 5) ** 9", Arrays.asList("44", "+", "845", "*", "(", "885", "-", "33", "/", "5", ")", "9")),
                           Arrays.asList("44 + a * (b) ** 9", Arrays.asList("44", "+", "a", "*", "(", "b", "-", "33", "/", "5", ")", "9"))
                           );
-        return parameters;
     }
 
     @Parameter
