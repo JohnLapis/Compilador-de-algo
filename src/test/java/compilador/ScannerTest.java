@@ -15,11 +15,11 @@ import static junitparams.JUnitParamsRunner.*;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnitParamsRunner.class)
-public class TestScanner {
+public class ScannerTest {
 
     @Test
     @Parameters(method = "arithmeticValues")
-    public void testArithmetic(String input, List<String> expected) {
+    public void testTokenzine(String input, List<String> expected) {
         try {
             assertEquals(Scanner.tokenize(input), expected);
         } catch (Throwable e) {
