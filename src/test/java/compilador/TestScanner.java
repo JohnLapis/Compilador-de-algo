@@ -16,34 +16,28 @@ import java.util.Collection;
 @RunWith(Parameterized.class)
 public class TestScanner {
     @Parameters
-    public static List data() {
-        return Arrays.asList(
-                          Arrays.asList("44 + 845", Arrays.asList("44", "845")),
-                          Arrays.asList("44 + 845 * (885 - 33 / 5) ** 9", Arrays.asList("44", "+", "845", "*", "(", "885", "-", "33", "/", "5", ")", "9")),
-                          Arrays.asList("44 + a * (b) ** 9", Arrays.asList("44", "+", "a", "*", "(", "b", "-", "33", "/", "5", ")", "9"))
-                          );
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][] {
+                { "44 + 845", Arrays.asList("44", "845") },
+                { "44 + 845", Arrays.asList("44", "845") },
+                { "44 + 845 * (885 - 33 / 5) ** 9", Arrays.asList("44", "+", "845", "*", "(", "885", "-", "33", "/", "5", ")", "9") },
+                { "44 + a * (b) ** 9", Arrays.asList("44", "+", "a", "*", "(", "b", "-", "33", "/", "5", ")", "9") }
+            });
     }
 
     @Parameter
     public String input;
 
     @Parameter(1)
-    public List<String> expected = new ArrayList<String>();
-
-    public TestArithmetic(String input, List<String> expected) {
-        this.input = input;
-        this.expected = expected;
-    }
+    public List<String> expected; // = new ArrayList<String>();
 
     @Test
     public void testArithmetic() {
-        System.out.println(input);
-        System.out.println("[ " + String.join(", ", expected) + " ]");
-        // try {
-        //     assertEquals(Scanner.tokenize(input), expected);
-        // } catch (Throwable e) {
-        //     System.out.println("Error " + e.getMessage());
-        //     e.printStackTrace();
-        // }
+        try {
+            assertEquals(Scanner.tokenize(input), expected);
+        } catch (Throwable e) {
+            System.out.println("Error " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }
