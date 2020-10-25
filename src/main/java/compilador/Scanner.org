@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 
 * number
 - Which exceptions should be thrown? Myb create a custom one
-#+begin_src java :noweb-ref Arithmetic
+#+begin_src java :noweb-ref Scanner
 class Scanner {
   public enum Keywords {};
 
@@ -24,12 +24,11 @@ class Scanner {
     while (matcher.find()) {
       matches.add(matcher.group());
     }
-    if (matches.length == 0) {
-        return ParseException;
-    }
     return matches;
   }
+#+end_src
 
+#+begin_src java :noweb-ref Scanner
   public static void main(String[] args) {
     // It will only accept one file.
     if (args.length != 1) {
@@ -52,6 +51,11 @@ class Scanner {
 }
 #+end_src
 
+#+begin_src java :tangle no
+    if (matches.length == 0) {
+        throw ParseException("Code could not be parsed.", matcher.end());
+    }
+#+end_src
 ** tokenizer
 #+begin_src
 [a-zA-Z_]
