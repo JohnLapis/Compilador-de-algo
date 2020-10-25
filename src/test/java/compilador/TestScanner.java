@@ -9,28 +9,23 @@ import junitparams.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import junitparams.naming.TestCaseName;
 
 import static junitparams.JUnitParamsRunner.*;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(JUnitParamsRunner.class)
 public class TestScanner {
-    // @Parameter
-    // public String input;
-    // @Parameter(1)
-    // public List<String> expected; // = new ArrayList<String>();
 
     @Test
     @Parameters(method = "arithmeticValues")
     public void testArithmetic(String input, List<String> expected) {
-        System.out.println(input);
-
-        // try {
-        //     assertEquals(Scanner.tokenize(input), expected);
-        // } catch (Throwable e) {
-        //     System.out.println("Error " + e.getMessage());
-        //     e.printStackTrace();
-        // }
+        try {
+            assertEquals(Scanner.tokenize(input), expected);
+        } catch (Throwable e) {
+            System.out.println("Error " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     public static Collection<Object[]> arithmeticValues() {
