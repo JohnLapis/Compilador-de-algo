@@ -1,0 +1,73 @@
+#+property: header-args :tangle ScannerTest.java :comments link
+
+* imports
+#+begin_src java :noweb-ref imports
+package compilador;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
+import org.junit.BeforeClass;
+
+import junitparams.*;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import junitparams.naming.TestCaseName;
+
+import static junitparams.JUnitParamsRunner.*;
+import static org.junit.Assert.assertEquals;
+#+end_src
+
+* ScannerTest
+
+#+begin_src java :noweb-ref ScannerTest
+@RunWith(JUnitParamsRunner.class)
+public class ScannerTest {
+    private String loadFile(Path filename) {
+        try {
+            return String.join("\n", Files.readAllLines(filename));
+        } catch (IOException e) {
+            System.out.println("Error " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
+     }
+
+    private Path director = Path.get("fixtures");
+
+    @BeforeClass
+    private void setUp() {
+        // for file in directory x
+        //              load file into property
+
+
+        //              and then make _____Values() use the property
+        for (Path filename : directory.listFiles()) {
+            this.filename = loadFile(filename);
+        }
+
+     }
+
+    @Test
+    @FileParameters(value = "src/test/java/compilador/fixtures", mapper = CsvWithHeaderMapper.class)
+    public void testTokenzine(String input, List<String> expected) {
+        try {
+            assertEquals(Scanner.tokenize(input), expected);
+        } catch (Throwable e) {
+            System.out.println("Error " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+}
+#+end_src
+
+#+begin_src java :tangle no :noweb-ref dataInjectorMethod
+    // public static Collection<Object[]> arithmeticValues() {
+    //     return Arrays.asList(new Object[][] {
+    //             { "44 + 845 * (885 - 33 / 5) ** 9", Arrays.asList("44", "+", "845", "*", "(", "885", "-", "33", "/", "5", ")", "**", "9") },
+    //             { "44 + a * (b) ** 9", Arrays.asList("44", "+", "a", "*", "(", "b", ")", "**", "9") }
+    //         });
+    // }
+#+end_src
