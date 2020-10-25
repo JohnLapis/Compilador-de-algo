@@ -10,8 +10,8 @@ import java.util.List;
 // imports:1 ends here
 
 // [[file:Compiler.org::*Compiler][Compiler:1]]
-class Compiler {
-    public static List<String> main(String[] args) throws IOException, ParseException, Exception {
+public class Compiler {
+    public static void main(String[] args) throws IOException, ParseException, Exception {
         // It will only accept one file.
         if (args.length != 1) {
             System.out.println("Wrong number of parameters provided.");
@@ -24,7 +24,6 @@ class Compiler {
             code = String.join("\n", Files.readAllLines(path));
             List<String> tokenizedCode = Scanner.tokenize(code);
             System.out.println("[ " + String.join(", ", tokenizedCode) + " ]");
-            return tokenizedCode;
         } catch (IOException e) {
             System.out.println("Error " + e.getMessage());
             e.printStackTrace();
