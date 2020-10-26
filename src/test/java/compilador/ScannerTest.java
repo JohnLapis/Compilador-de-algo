@@ -49,6 +49,9 @@ public class ScannerTest {
         DocumentBuilder docBuilder = dbFactory.newDocumentBuilder();
         File path = new File(ScannerTest.fixtureDirectory);
         for (String file : path.list()) {
+            if (file.contains("IGNORED")) {
+                continue;
+            }
             file = path + "/" + file;
             Document doc = docBuilder.parse(file);
             NodeList nodes = doc.getElementsByTagName("codeSample");
