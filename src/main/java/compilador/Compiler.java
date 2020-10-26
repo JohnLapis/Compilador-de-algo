@@ -19,20 +19,9 @@ public class Compiler {
         }
 
         Path path = Paths.get(args[0]);
-        String code;
-        try {
-            code = String.join("\n", Files.readAllLines(path));
-            List<String> tokenizedCode = Scanner.tokenize(code);
-            System.out.println("[ " + String.join(", ", tokenizedCode) + " ]");
-        } catch (IOException e) {
-            System.out.println("Error " + e.getMessage());
-            e.printStackTrace();
-            throw e;
-        } catch (ParseException e) {
-            System.out.println("Error " + e.getMessage());
-            e.printStackTrace();
-            throw e;
-        }
+        String code = String.join("\n", Files.readAllLines(path));
+        List<String> tokenizedCode = Scanner.tokenize(code);
+        System.out.println("[ " + String.join(", ", tokenizedCode) + " ]");
     }
 }
 // Compiler:1 ends here
