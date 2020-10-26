@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<codeSamples>
+    <!-- Only operators should be matched and prioritizing repeated-character operators -->
+    <codeSample name="repeated special basic operator">
+        <code>a + a ++ - -- * ** -* -+ +**+- a</code>
+        <tokens>a + a ++ - -- * ** - * - + + ** + - a</tokens>
+    </codeSample>
+</codeSamples>
