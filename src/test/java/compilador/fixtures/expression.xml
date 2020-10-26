@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <codeSamples>
-    <code>44 + 845</code>
-    <code>44 + 845 * (885 - 33 / 5) ** 9</code>
-    <code>44 + a * (b) ** 9</code>
+    <codeSample>
+        <code>44 + 845  </code>
+        <tokens>44 + 845</tokens>
+    </codeSample>
+    <codeSample>
+        <code>44+845 *( 885 - 33 /   5 ) **     9</code>
+        <tokens>44 + 845 * ( 885 - 33 / 5 ) ** 9</tokens>
+    </codeSample>
+    <codeSample>
+        <code>44 + a* (b)** 9</code>
+        <tokens>44 + a * ( b ) ** 9</tokens>
+    </codeSample>
 </codeSamples>
