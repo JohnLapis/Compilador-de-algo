@@ -1,27 +1,4 @@
-#+property: header-args :tangle ScannerTest.java :comments link
-
-* imports
-searc Oracle ~resource~ (from resource.getInputStream())
-             ~new InputSource()~
-#+begin_src java :noweb-ref imports
-package compilador;
-
-import java.util.List;
-import java.util.Collection;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import junitparams.*;
-import org.junit.Test;
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
-
-import static junitparams.JUnitParamsRunner.*;
-import static org.junit.Assert.assertEquals;
-#+end_src
-
-* Mapper
-#+begin_src java :noweb-ref Mapper :tangle XMLMapper.java
+// [[file:ScannerTest.org::*Mapper][Mapper:1]]
 package compilador;
 
 import junitparams.mappers.DataMapper;
@@ -76,47 +53,4 @@ public class XMLMapper implements DataMapper {
         }
     }
 }
-#+end_src
-* ScannerTest
-
-#+begin_src java :noweb-ref ScannerTest
-@RunWith(JUnitParamsRunner.class)
-public class ScannerTest {
-    private Path fixtureDirectory = Paths.get("fixtures");
-
-    // @BeforeClass
-    // private void setUp() {
-    //     for file in directory x
-    //                  load file into property
-
-
-    //                  and then make _____Values() use the attribute
-    //     for (Path filename : directory.listFiles()) {
-    //         this.filename = loadFile(filename);
-    //     }
-    // }
-
-    @Test
-    @FileParameters(value = "src/test/java/compilador/fixtures/expression.xml", mapper = XMLMapper.class)
-    public void testTokenzine(String input, List<String> expected) {
-        System.out.println(input);
-        System.out.println(expected);
-
-        try {
-            assertEquals(Scanner.tokenize(input), expected);
-        } catch (Throwable e) {
-            System.out.println("Error " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-}
-#+end_src
-
-#+begin_src java :tangle no :noweb-ref dataInjectorMethod
-    // public static Collection<Object[]> arithmeticValues() {
-    //     return Arrays.asList(new Object[][] {
-    //             { "44 + 845 * (885 - 33 / 5) ** 9", Arrays.asList("44", "+", "845", "*", "(", "885", "-", "33", "/", "5", ")", "**", "9") },
-    //             { "44 + a * (b) ** 9", Arrays.asList("44", "+", "a", "*", "(", "b", ")", "**", "9") }
-    //         });
-    // }
-#+end_src
+// Mapper:1 ends here

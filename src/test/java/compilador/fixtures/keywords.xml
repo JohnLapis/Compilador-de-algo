@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <codeSamples>
     <code>await break case catch class const continue debugger default delete do else enum export extends false finally for function if import ininstance of new null return super switch this throw true try typeof var void while with yield</code>
 </codeSamples>

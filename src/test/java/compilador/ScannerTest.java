@@ -1,52 +1,36 @@
 // [[file:ScannerTest.org::*imports][imports:1]]
 package compilador;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Collection;
-import org.junit.BeforeClass;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import junitparams.*;
 import org.junit.Test;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
-
-import junitparams.naming.TestCaseName;
 
 import static junitparams.JUnitParamsRunner.*;
 import static org.junit.Assert.assertEquals;
 // imports:1 ends here
 
-// [[file:ScannerTest.org::*Mapper][Mapper:1]]
-class XMLMapper implements DataMapper {
-    static Object[] map(Reader reader) {
-        Document data = DocumentBuilder.parse(reader.read());
-        return getElementsByTagName("codeSamples")[0]
-            .getElementsByTagName("code")
-            .stream()
-            .map((element) -> getTextContent(element));
-     }
-}
-
-// Mapper:1 ends here
-
 // [[file:ScannerTest.org::*ScannerTest][ScannerTest:1]]
 @RunWith(JUnitParamsRunner.class)
 public class ScannerTest {
-    private Path fixtureDirectory = Path.get("fixtures");
+    private Path fixtureDirectory = Paths.get("fixtures");
 
-    @BeforeClass
-    private void setUp() {
-        // for file in directory x
-        //              load file into property
+    // @BeforeClass
+    // private void setUp() {
+    //     for file in directory x
+    //                  load file into property
 
 
-        //              and then make _____Values() use the attribute
-        // for (Path filename : directory.listFiles()) {
-        //     this.filename = loadFile(filename);
-        // }
-
-    }
+    //                  and then make _____Values() use the attribute
+    //     for (Path filename : directory.listFiles()) {
+    //         this.filename = loadFile(filename);
+    //     }
+    // }
 
     @Test
     @FileParameters(value = "src/test/java/compilador/fixtures/expression.xml", mapper = XMLMapper.class)
