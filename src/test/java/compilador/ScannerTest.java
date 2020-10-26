@@ -36,19 +36,14 @@ public class ScannerTest {
     @Test
     @Parameters(method = "data")
     public void testTokenzine(String input, String expected) {
-        System.out.println(input);
-        System.out.println(expected);
-
         try {
-            System.out.println("foi");
-
             assertEquals(String.join(" ", Scanner.tokenize(input)), expected);
         } catch (Throwable e) {
             System.out.println("Error " + e.getMessage());
             e.printStackTrace();
         }
     }
-    private Collection<Object[]> data() throws IOException, ParserConfigurationException, SAXException {
+    private Collection<List> data() throws IOException, ParserConfigurationException, SAXException {
         List parameters = new ArrayList();
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docBuilder = dbFactory.newDocumentBuilder();
@@ -65,11 +60,9 @@ public class ScannerTest {
                 String expected = currentNode.getElementsByTagName("tokens").item(0)
                     .getTextContent();
                 parameters.add(Arrays.asList(input, expected));
-                System.out.println(parameters.get(i).toString());
             }
         }
-        return Arrays.asList(parameters);
-        // return parameters;
+        return parameters;
     }
 }
 // ScannerTest:1 ends here
