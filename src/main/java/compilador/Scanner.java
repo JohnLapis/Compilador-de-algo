@@ -8,7 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 // imports:1 ends here
 
-// [[file:Scanner.org::*code][code:2]]
+// [[file:Scanner.org::*tokenizer_start][tokenizer_start:1]]
 class Scanner {
     public enum Keywords {};
 
@@ -21,14 +21,14 @@ class Scanner {
          * And they are in order of priority. Ex: matching '!=' has higher
          * precedence than '!'. Resulting in '!=' instead of '!', '='.
          */
-        // code:2 ends here
+        // tokenizer_start:1 ends here
 
-        // [[file:Scanner.org::*code][code:3]]
+        // [[file:Scanner.org::*comment][comment:1]]
         // Only multiline comments are matched with the DOTALL flag.
         String COMMENT = "(?s:/\\*.*?\\*/)|//.*";
-        // code:3 ends here
+        // comment:1 ends here
 
-        // [[file:Scanner.org::*code][code:4]]
+        // [[file:Scanner.org::*special_token][special_token:1]]
         String SPECIAL_TOKEN =
             String.join("|",
                         // Special handlings
@@ -40,6 +40,9 @@ class Scanner {
                         // Punctuators which may have repeatable character
                         "\\+{1,2}|-{1,2}|\\*{1,2}|%|/|>{1,3}|<{1,2}|&{1,2}|\\|{1,2}"
                         );
+        // special_token:1 ends here
+
+        // [[file:Scanner.org::*literal][literal:1]]
         String LITERAL =
             String.join("|",
                         // Decimal literal
@@ -55,9 +58,9 @@ class Scanner {
                         // Template literal
                         "(?s:`.*?`)"
                         );
-        // code:4 ends here
+        // literal:1 ends here
 
-        // [[file:Scanner.org::*code][code:5]]
+        // [[file:Scanner.org::*line_terminator][line_terminator:1]]
         /* The LINE_TERMINATOR possible characters are:
          * U+000A	LINE FEED (LF)	<LF>
          * U+000D	CARRIAGE RETURN <CR>
@@ -68,9 +71,9 @@ class Scanner {
          * line numbers.
          */
         String LINE_TERMINATOR = "\\u000A+|\\000D+|\\u2028+|\\u2029+";
-        // code:5 ends here
+        // line_terminator:1 ends here
 
-        // [[file:Scanner.org::*code][code:6]]
+        // [[file:Scanner.org::*identifier_name][identifier_name:1]]
         /*
          * IDENTIFIER_NAME allows UnicodeEscapeSequences that, when replaced by
          * a SourceCharacter is still a valid IDENTIFIER_NAME. Ex: '\0061' is
@@ -107,7 +110,10 @@ class Scanner {
 
             matches.add(match);
         }
+        // matching:1 ends here
+
+        // [[file:Scanner.org::*tokenizer_end][tokenizer_end:1]]
         return matches;
     }
 }
-// code:7 ends here
+// tokenizer_end:1 ends here
