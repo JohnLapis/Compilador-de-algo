@@ -1,9 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<!-- The tokens are all separated by one single whitespace character. -->
 <codeSamples>
     <!-- Only operators should be matched and prioritizing repeated-character operators -->
     <codeSample name="repeated special basic operator">
-        <code>a + a ++ - -- * ** -* -+ +**+- a</code>
-        <tokens>a + a ++ - -- * ** - * - + + ** + - a</tokens>
+        <code>bar + bar ++ - -- * ** -* -+ +**+- bar</code>
+        <tokens>bar + bar ++ - -- * ** - * - + + ** + - bar</tokens>
+    </codeSample>
+    <codeSample name="repeated special basic operator">
+        <code>foo = bar !== foo ===== !!!bar !!= foo ==</code>
+        <tokens>foo = bar !== foo === == ! ! ! bar ! != foo ==</tokens>
+    </codeSample>
+    <codeSample name="Multiline comment">
+        <code>
+var a =1+2 /*
+ does something
+
+*/+3/*
+
+does something
+
+*/
+        </code>
+        <tokens>var a = 1 + 2 + 3</tokens>
+    </codeSample>
+    <codeSample name="Inline comment">
+        <code>var a=1+2 /* does something */ // does something </code>
+        <tokens>var a = 1 + 2</tokens>
+    </codeSample>
+    <codeSample name="Inline and multiline comments mixed">
+        <code>
+var a =1+2 /*
+
+does something // asfasdfasd
+
+*/ + 3 //adf asdfasdfa /* lsfkasdlf
++ 4
+        </code>
+        <tokens>var a = 1 + 2 + 3 + 4</tokens>
+    </codeSample>
+    <codeSample name="Line terminators">
+        <!-- The comments after the line terminators are, respectively their code point, unicode name and abbreviation according to ECMAScript documentation. -->
+        <!-- The comments have zero space after the line terminator. -->
+        <code>
+// U+000A	LINE FEED (LF) (LF)
+// U+000D	CARRIAGE RETURN (CR)
+ //U+2028	LINE SEPARATOR	(LS)
+ //U+2029  PARAGRAPH SEPARATOR (PS)</code>
+        <tokens>
+    </tokens>
     </codeSample>
 </codeSamples>
