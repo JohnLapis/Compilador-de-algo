@@ -105,6 +105,9 @@ replace it with the variable (of course, put this into a function)
 
 - check the thing with line terminators later because it is less relevant
   + dealing with unicode characters is more complicated
+** ! ECMAScript uses Unicode@v13 and Java@11 uses version 10
+Do a sanity check later with that information. The places where this could go
+wrong is with big sets (like with IDENTIFIER_NAME)
 * code
 #+begin_src js :tangle no
 //     String U_OPERATORS[] = {"-", "~", "++", "--",}
@@ -191,9 +194,24 @@ class Scanner {
          * line numbers.
          */
         String LINE_TERMINATOR = "\\u000A+|\\000D+|\\u2028+|\\u2029+";
-
 #+end_src
 
+- deal with Pattern Syntax and Whitespace Pattern Syntax Later
+#+begin_quote
+- ID_Start
+Unicode General_Category of...
+uppercase letters, lowercase letters, titlecase letters, modifier letters, other letters, letter numbers, plus Other_ID_Start,
+\p{L}             \p{Nl}                                                                                 \p{Other_ID_Start}
+
+minus Pattern_Syntax and Pattern_White_Space code points.
+-     \p{Pattern_Syntax} -  \p{Pattern_White_Space}]
+
+
+ID_Continue	ID_Continue characters include ID_Start characters, plus characters having the Unicode General_Category of nonspacing marks, spacing combining marks, decimal number, connector punctuation, plus Other_ID_Continue , minus Pattern_Syntax and Pattern_White_Space code points.
+In set notation:
+[\p{ID_Start}\p{Mn}\p{Mc}\p{Nd}\p{Pc}\p{Other_ID_Continue}-\p{Pattern_Syntax}-\p{Pattern_White_Space}]
+#+end_quote
+** identifier_name
 #+begin_src java :noweb-ref IDENTIFIER_NAME
         /*
          * IDENTIFIER_NAME allows UnicodeEscapeSequences that, when replaced by
@@ -205,9 +223,9 @@ class Scanner {
          */
         String IDENTIFIER_NAME =
             // Valid starting character
-            "[a-zA-Z$_]"
+            "[\p{L}\p{Nl}]"
             // Valid ending characters
-             + "[a-zA-Z$_\\u200c\\200d]+"
+            + "[\p{L}\p{Nl}\\u200c\\200d]+";
 #+end_src
 
 #+begin_src java :noweb-ref Matching

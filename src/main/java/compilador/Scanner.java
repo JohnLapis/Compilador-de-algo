@@ -81,13 +81,13 @@ class Scanner {
          */
         String IDENTIFIER_NAME =
             // Valid starting character
-            "[a-zA-Z$_]"
+            "[\p{L}\p{Nl}]"
             // Valid ending characters
-            + "[a-zA-Z$_\\u200c\\200d]+"
-            // code:6 ends here
+            + "[\p{L}\p{Nl}\\u200c\\200d]+";
+        // identifier_name:1 ends here
 
-            // [[file:Scanner.org::*code][code:7]]
-            Pattern pattern =
+        // [[file:Scanner.org::*matching][matching:1]]
+        Pattern pattern =
             Pattern.compile(String.join("|",
                                         COMMENT,
                                         // LITERAL,
