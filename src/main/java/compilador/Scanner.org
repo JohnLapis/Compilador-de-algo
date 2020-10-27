@@ -11,20 +11,229 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 #+end_src
 
-* scanner
-- Which exceptions should be thrown? Myb create a custom one
-- ArrayList initial capacity is 10. It maybe should set higher.
-#+begin_src java :noweb-ref Scanner
+* tokenizer
+:PROPERTIES:
+:header-args: :tangle   no
+:END:
+- https://github.com/tc39/test262/tree/main/src
+- https://www.ecma-international.org/ecma-262/11.0/index.html#sec-grammar-summary
+
+- token
+  #+begin_src js
+    commonToken = (IdentifierName | Punctuator | NumericLiteral | StringLiteral | Template)
+
+    IdentifierName = IdentifierStart+IdentifierPart
+    IdentifierStart = [$_\\]
+
+    IdentifierStart = UnicodeIDStart $ _ \UnicodeEscapeSequence
+    IdentifierPart = UnicodeIDContinue $ \UnicodeEscapeSequence <ZWNJ> <ZWJ>
+
+  UnicodeIDStart::
+    any Unicode code point with the Unicode property “ID_Start”
+    UnicodeIDContinue::
+    any Unicode code point with the Unicode property “ID_Continue”
+    Punctuator
+    NumericLiteral
+    StringLiteral
+    Template
+  #+end_src
+- keyword
+  $note: all keywords are valid identifier_names
+  #+begin_src js
+  await | break | case | catch | class | const | continue | debugger | default | delete | do | else | enum | export | extends | false | finally | for | function | if | import | ininstance | of | new | null | return | super | switch | this | throw | true | try | typeof | var | void | while | with | yield
+  #+end_src
+- puncturator
+  #+begin_src js
+  (OptionalChainingPunctuator | OtherPunctuator)
+
+  OptionalChainingPunctuator = \?\.(?!=(?DECIMAL DIGIT))
+
+  OtherPunctuator =
+[ { ( ) [ ] . . . . ; , < > <= >= == != === !== + - * % ** ++ -- << >> >>> & | ^ ! ~ && || ? ?? : = += -= *= %= **= <<= >>= >>>= &= |= ^= => ]
+
+  DivPunctuator (/|/=)
+  RightBracePunctuator = }
+  #+end_src
+- WhiteSpace
+  #+begin_src js
+  [\u0009 \u000B \u000C \u0020 \u00A0 \uFEFF]
+  whitespace = \s # check all characters possible
+
+  Code Point	Name	Abbreviation
+  U+0009	CHARACTER TABULATION	<TAB>
+  U+000B	LINE TABULATION	<VT>
+  U+000C	FORM FEED (FF)	<FF>
+  U+0020	SPACE	<SP>
+  U+00A0	NO-BREAK SPACE	<NBSP>
+  U+FEFF
+  #+end_src
+- LineTerminator
+  #+begin_src js
+  Terminator  = (LineTerminator|LineTerminatorSequence)
+  LineTerminator = (<LF> | <CR> | <LS> | <PS> )
+  LineTerminatorSequence = (<LF> | (?=>CR) <CR>(?!=<LF>) ] | <LS> | <PS> | <CR><LF>)
+  #+end_src
+
+- All "kinds" of tokens are either keywords identifiernames and special symbols
+- keywords is a subset of identifiernames
+- space should be ignored completely
+  + ex: imagine you write ~varname = ...~ it should pass the scanner
+- the biggest problem is the special characters
+
+
+- maybe put those in a enum in the class
+- read more the tables in oracle for syntax you still don't know
+- string literals will be handled later (quotes are a differente case form ())
+
+** ! Which exceptions should be thrown? Myb create a custom one
+** ! ArrayList initial capacity is 10. It maybe should set higher.
+** Create your own templates then.
+If it's within {} and it's not escaped, get its position + around braces and
+replace it with the variable (of course, put this into a function)
+** ! who should say if asdf645 is valid??? the parser
+** ! decimal literal try
+> "111_111_".match(/\d{1,3}(_(?=\d{3}(_|$))\d+)*/)
+** ! optimizing regexes
+- how are they matched? if alphanums are matched using ranges of the unicode,
+  then ~[a-zA-Z]~ is faster than ~[asdfb'@$650056#ffs]~
+- should i put this comment?
+  #+begin_quote
+  // They are in increasing order of size of the set of matchable characters
+  #+end_quote
+  well, it looks almost certain that the ~SPECIAL_TOKEN~ requires more
+  comparisons and should be last
+
+- check the thing with line terminators later because it is less relevant
+  + dealing with unicode characters is more complicated
+* code
+#+begin_src js :tangle no
+//     String U_OPERATORS[] = {"-", "~", "++", "--",}
+// Pattern OPERATOR = Pattern.compile("(" + String.join("|", OPERATORS) + ")")
+// Pattern NUMBER = Pattern.compile("[+-]?\d+(\.\d)?")
+// PatLiteral
+Pattern Literal	=	( <DECIMAL_LITERAL> | <HEX_INTEGER_LITERAL> | <STRING_LITERAL> | <BOOLEAN_LITERAL> | <NULL_LITERAL> | <REGULAR_EXPRESSION_LITERAL> )tern pattern = Pattern.compile("((?NUMBER)|(?IDENTIFIER)|(?OPERATOR))");
+
+String OPERATOR = "=|\+|-|/|<|>|>>|<<|<=|>=|===|!=|!==|\|\||&";
+String DECIMAL_NUMBER = "[+-]?\\d+(\\.\\d)?";
+
+// Can i call it an expressoin???
+// It's still not compled because it's "templated"
+String LINE_TERMINATOR = "$"
+String EXPRESSION = "({OPERATOR}|{LITERAL}|{IDENTIFIER_NAME})*LINE_TERMINATOR";
+
+// Alternative to EXPRESSION
+// it's the parser that decides if > is followed by another > or not
+// @ e ^??     e #???
+
+#+end_src
+#+begin_src java :noweb-ref Start of tokenziner function
 class Scanner {
     public enum Keywords {};
 
     public static List<String> tokenize(String code) throws ParseException {
-        Pattern pattern = Pattern.compile("\\d+");
+        /* The matching is eager, so, if there's a character that could be
+         * repeated (like '>' and '>>' or '*' and '**') as a token, a single
+         * token of the repeated character will be matched instead of many
+         * tokens of a single character.
+         *
+         * And they are in order of priority. Ex: matching '!=' has higher
+         * precedence than '!'. Resulting in '!=' instead of '!', '='.
+         */
+
+#+end_src
+
+#+begin_src java :noweb-ref COMMENT
+        // Only multiline comments are matched with the DOTALL flag.
+        String COMMENT = "(?s:/\\*.*?\\*/)|//.*";
+#+end_src
+
+#+begin_src java :noweb-ref SPECIAL_TOKEN
+        String SPECIAL_TOKEN =
+            String.join("|",
+                        // Special handlings
+                        "!==?|!|\\?(\\.(?=\D)|\\?)?",
+                        // Single punctuators
+                        "\\(|\\)|\\[|\\]|\\{|\\}|,|\\.(\\.{2})?|;|:|~|\\",
+                        // Punctuators with '='
+                        "(\\+|-|\\*{1,2}|/|%|<{1,2}|>{1,3}|^|&|\\|)=|=>|={1,3}",
+                        // Punctuators which may have repeatable character
+                        "\\+{1,2}|-{1,2}|\\*{1,2}|%|/|>{1,3}|<{1,2}|&{1,2}|\\|{1,2}"
+                        );
+#+end_src
+
+#+begin_src java :noweb-ref LITERAL
+        String LITERAL =
+            String.join("|",
+                        // Decimal literal
+                        "",
+                        // Octal literal
+                        "",
+                        // Hexadecimal literal
+                        "",
+                        // String literal
+                        "\".*?\"",
+                        // Regex literal
+                        "/.*/",
+                        // Template literal
+                        "(?s:`.*?`)"
+                        );
+
+#+end_src
+
+#+begin_src java :noweb-ref LINE_TERMINATOR
+        /* The LINE_TERMINATOR possible characters are:
+         * U+000A	LINE FEED (LF)	<LF>
+         * U+000D	CARRIAGE RETURN <CR>
+         * U+2028	LINE SEPARATOR	<LS>
+         * U+2029 PARAGRAPH SEPARATOR <PS>
+         *
+         * <CR> followed by <LF> is considered token for better reporting of
+         * line numbers.
+         */
+        String LINE_TERMINATOR = "\\u000A+|\\000D+|\\u2028+|\\u2029+";
+
+#+end_src
+
+#+begin_src java :noweb-ref IDENTIFIER_NAME
+        /*
+         * IDENTIFIER_NAME allows UnicodeEscapeSequences that, when replaced by
+         * a SourceCharacter is still a valid IDENTIFIER_NAME. Ex: '\0061' is
+         * valid because it represents the character 'e' and '\0025' is invalid
+         * because it represents the character '%'.
+         *
+         * The code points U+200C and U+200D are named, respectively, <ZWNJ>, <ZWJ>.
+         */
+        String IDENTIFIER_NAME =
+            // Valid starting character
+            "[a-zA-Z$_]"
+            // Valid ending characters
+             + "[a-zA-Z$_\\u200c\\200d]+"
+#+end_src
+
+#+begin_src java :noweb-ref Matching
+        Pattern pattern =
+            Pattern.compile(String.join("|",
+                                        COMMENT,
+                                        // LITERAL,
+                                        IDENTIFIER_NAME,
+                                        LINE_TERMINATOR,
+                                        SPECIAL_TOKEN
+                                        ));
         Matcher matcher = pattern.matcher(code);
         List<String> matches = new ArrayList<String>();
         while (matcher.find()) {
-            matches.add(matcher.group());
+            String match = matcher.group();
+            if (match.contains("/*") || match.contains("//")) {
+                System.out.println("ignored");
+                continue;
+            }
+            // System.out.println(matcher.start() + " " + matcher.end());
+
+            matches.add(match);
         }
+#+end_src
+
+#+begin_src java :noweb-ref End of tokenziner function
         return matches;
     }
 }
@@ -34,16 +243,4 @@ class Scanner {
     if (matches.length == 0) {
         throw ParseException("Code could not be parsed.", matcher.end());
     }
-#+end_src
-** tokenizer
-#+begin_src
-[a-zA-Z_]
-/^
-(\w+ )+ # keyword in var/function declaration
- +
-(IDENTIFIER) # varname
- *
-(= *(?EXPR))
-;$
-/
 #+end_src
