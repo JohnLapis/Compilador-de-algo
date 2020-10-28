@@ -1,5 +1,9 @@
 #+property: header-args :tangle Scanner.java :comments link
 
+* bnf
+** https://www.ccs.neu.edu/home/dherman/javascript/
+** https://tomcopeland.blogs.com/EcmaScript.html
+** https://www.ecma-international.org/ecma-262/11.0/index.html#sec-names-and-keywords
 * imports
 #+begin_src java :noweb-ref imports
 package compilador;
