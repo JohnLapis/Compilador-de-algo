@@ -133,6 +133,15 @@ in case a sequence of characters isn't matched by any of the valid sequences
 expressed via the regexes, there's a syntax error. And care should be taken to
 avoid matching useless characters like whitespace, line terminators, etc.
 ** ! create tests for invalid input
+** ! pass some of the checking to the parser
+That's something quite obvious but it isn't so clear where to draw the line in
+specific cases. But it is important to know we have two passes to parse the
+code.
+
+Considering this, it might even be useful to simplify the rules of the scanner.
+E.g., leaving to the parser the prohibition of certain characters while having a
+high level stuff in the scanner. However, the scanner shouldn't be deceived so
+much.
 * code
 ** tokenizer_start
 #+begin_src java :noweb-ref tokenizer_start
@@ -201,12 +210,18 @@ minus Pattern_Syntax and Pattern_White_Space code points.
 ID_Continue	ID_Continue characters include ID_Start characters, plus characters having the Unicode General_Category of nonspacing marks, spacing combining marks, decimal number, connector punctuation, plus Other_ID_Continue , minus Pattern_Syntax and Pattern_White_Space code points.
 In set notation:
 [\p{ID_Start}\p{Mn}\p{Mc}\p{Nd}\p{Pc}\p{Other_ID_Continue}-\p{Pattern_Syntax}-\p{Pattern_White_Space}]
+
+
+- some line terminator matching is made implicitly by the fact that ~.~ doesn't
+  match line terminators. However, the line terminators it doesn't match should
+  be checked agains the line terminators determined by ECMAScript
 #+end_quote
 ** LITERAL
 - [-] they can be followed only (i think) by line terminal, punctuator, whitespace,
   [-] comments
 - [-] how far word boudaries (~\b~) go?
 - [-] just make it work most of the time and then perfect that later
+- [-] the regex flags should be optimized to match only IdentifierPart
 #+begin_src java :noweb-ref LITERAL
 String CHARATER_ESCAPE_SEQUENCE =
     String.join("|",
