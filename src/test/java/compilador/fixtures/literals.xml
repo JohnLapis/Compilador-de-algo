@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<codeSamples>
+    <codeSample name="Numeric literals">
+        <description>Validates if all numeric literals are matched.</description>
+        <code>1 + 11 + 11. + 11.1 + 11.e-1 + 11.E+1 + 11.1e-1 + 11.1E+1 + .1 + .1e-1 + .1E+1 + 0n + 1n + 0b01 + 0B10n + 0o123 + 0O456n + 0x123abc + 0X123aBcn + 0b01 + 0b00n + 0b01 + 0b00n + 0b01 + 0b00n</code>
+<tokens>1 + 11 + 11. + 11.1 + 11.e-1 + 11.E+1 + 11.1e-1 + 11.1E+1 + .1 + .1e-1 + .1E+1 + 0n + 1n + 0b01 + 0B10n + 0o123 + 0O456n + 0x123abc + 0X123aBcn + 0b01 + 0b00n + 0b01 + 0b00n + 0b01 + 0b00n</tokens>
+    </codeSample>
+</codeSamples>
