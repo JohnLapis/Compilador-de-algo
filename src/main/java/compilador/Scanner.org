@@ -132,9 +132,9 @@ rnative to EXPRESSION
 // @ e ^??     e #???
 
 #+end_src
-** ! [#A] adding a catch all regex
+** ! [#A] adding a catch all regex for "unidentified token"
 in case a sequence of characters isn't matched by any of the valid sequences
-expressed via the regexes, there's a syntax error. And care should be taken to
+expressed via the regexes, there's a "unidentified-token" error. And care should be taken to
 avoid matching useless characters like whitespace, line terminators, etc.
 ** ! create tests for invalid input
 ** ! pass some of the checking to the parser
@@ -161,7 +161,8 @@ much.
   later
 - optimization comes at the end. Now is not the time.
 - this will make it possible to avoid some ~[^foo]~'s
-
+- i could also just substitute the unicode code point before scanning, but
+  that's gonan be clearer later
 * code
 ** tokenizer_start
 #+begin_src java :noweb-ref tokenizer_start
