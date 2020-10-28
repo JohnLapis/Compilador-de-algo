@@ -2,16 +2,18 @@
 
 <!-- The tokens are all separated by one single whitespace character. -->
 <codeSamples>
-    <!-- Only operators should be matched and prioritizing repeated-character operators -->
-    <codeSample name="repeated special basic operator">
-        <code>bar + bar ++ - -- * ** -* -+ +**+- bar</code>
-        <tokens>bar + bar ++ - -- * ** - * - + + ** + - bar</tokens>
-    </codeSample>
+    <!--TODO: This test will be used later for checking error raising -->
+    <!-- <codeSample name="repeated special basic operator">
+         <code>bar + bar ++ - -- * ** -* -+ +**+- bar</code>
+         <tokens>bar + bar ++ - -- * ** - * - + + ** + - bar</tokens>
+         </codeSample> -->
     <codeSample name="repeated special basic operator">
         <code>foo = bar !== foo ===== !!!bar !!= foo ==</code>
         <tokens>foo = bar !== foo === == ! ! ! bar ! != foo ==</tokens>
     </codeSample>
+
     <codeSample name="Multiline comment">
+        <description>Checks if comments are ignored.</description>
         <code>
 var a =1+2 /*
  does something
@@ -25,10 +27,12 @@ does something
         <tokens>var a = 1 + 2 + 3</tokens>
     </codeSample>
     <codeSample name="Inline comment">
+        <description>Checks if comments are ignored.</description>
         <code>var a=1+2 /* does something */ // does something </code>
         <tokens>var a = 1 + 2</tokens>
     </codeSample>
     <codeSample name="Inline and multiline comments mixed">
+        <description>Checks if comments are ignored.</description>
         <code>
 var a =1+2 /*
 
@@ -40,6 +44,7 @@ does something // asfasdfasd
         <tokens>var a = 1 + 2 + 3 + 4</tokens>
     </codeSample>
     <codeSample name="Line terminators">
+        <description>Checks if valid line terminators are matched for later semicolon insertion.</description>
         <!-- The comments after the line terminators are, respectively their code point, unicode name and abbreviation according to ECMAScript documentation. -->
         <!-- The comments have zero space after the line terminator. -->
         <code>
