@@ -142,6 +142,22 @@ Considering this, it might even be useful to simplify the rules of the scanner.
 E.g., leaving to the parser the prohibition of certain characters while having a
 high level stuff in the scanner. However, the scanner shouldn't be deceived so
 much.
+** ! on escaping sequences
+- some wrong escseq (escaping sequences) are still valid code and there's
+  "nothing" to do about it
+- lazy matching is the best option for avoiding sequences from continuing after
+  their end
+- the important part is to allow the "prohibited" characters to be matched
+  within the regex. So the idea is to have general structs with their
+  appropriate rules, and then just add at the end the option for escaping. And
+  those options should encompass the appropriate rules
+- An idea is to create a func ~makeRegexEscape()~ which returns the regex for
+  escaping the chars given in the arguments.
+- the focus is to have everything working most of the time and perfecting it
+  later
+- optimization comes at the end. Now is not the time.
+- this will make it possible to avoid some ~[^foo]~'s
+
 * code
 ** tokenizer_start
 #+begin_src java :noweb-ref tokenizer_start
@@ -212,16 +228,17 @@ In set notation:
 [\p{ID_Start}\p{Mn}\p{Mc}\p{Nd}\p{Pc}\p{Other_ID_Continue}-\p{Pattern_Syntax}-\p{Pattern_White_Space}]
 
 
-- some line terminator matching is made implicitly by the fact that ~.~ doesn't
+- [-] some line terminator matching is made implicitly by the fact that ~.~ doesn't
   match line terminators. However, the line terminators it doesn't match should
   be checked agains the line terminators determined by ECMAScript
+
+  Have a look at java's ~\R~ (it's only a slight superset of the ecmascript line
+  term.)
 #+end_quote
 ** LITERAL
-- [-] they can be followed only (i think) by line terminal, punctuator, whitespace,
-  [-] comments
-- [-] how far word boudaries (~\b~) go?
+- [-] they can be followed only (i think) by line terminal, punctuator,
+  whitespace, comments
 - [-] just make it work most of the time and then perfect that later
-- [-] the regex flags should be optimized to match only IdentifierPart
 #+begin_src java :noweb-ref LITERAL
 String CHARATER_ESCAPE_SEQUENCE =
     String.join("|",
@@ -267,6 +284,10 @@ String LITERAL =
                 "0[oO][0-7]+n?",
                 // Hexadecimal literal
                 "0[xX][0-9a-fA-F]+n?",
+#+end_src
+
+- [-] how far word boudaries (~\b~) go?
+#+begin_src java :noweb-ref LITERAL
                 // String literal
                 /**
                  * Each regex composing a string literal matches only
@@ -291,12 +312,21 @@ String LITERAL =
                  * U+005C is a backslash, which doesn't conflict with
                  * the non-literal dot following it.
                  */
+#+end_src
+
+- [-] the regex flags should be optimized to match only IdentifierPart
+#+begin_src java :noweb-ref LITERAL
                 // Regex literal: first character
-                "/([^\\*\\[/\\]|(\\u005c).+)"
+                "/([^\\*\\[/\\]|(\\u005c).+|\\[.*?\\])"
                 // Regex litreal: following characters
-                + "([^\\[/\\]|)*?/.",
+                + "/([^\\[/\\]|(\\u005c).+|\\[.*?\\])*?/",
+#+end_src
+
+- [-] where should the substitution of the template literal be? i think it's in
+  the parser
+#+begin_src java :noweb-ref LITERAL
                 // Template literal
-                "(?s:`.*?`)"
+                "(?s:`([^`\\]|(\\u005c).+)*?`)"
                 );
 #+end_src
 

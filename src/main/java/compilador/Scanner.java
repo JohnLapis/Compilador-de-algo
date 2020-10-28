@@ -102,6 +102,9 @@ class Scanner {
                         "0[oO][0-7]+n?",
                         // Hexadecimal literal
                         "0[xX][0-9a-fA-F]+n?",
+                        // LITERAL:1 ends here
+
+                        // [[file:Scanner.org::*LITERAL][LITERAL:2]]
                         // String literal
                         /**
                          * Each regex composing a string literal matches only
@@ -126,14 +129,20 @@ class Scanner {
                          * U+005C is a backslash, which doesn't conflict with
                          * the non-literal dot following it.
                          */
+                        // LITERAL:2 ends here
+
+                        // [[file:Scanner.org::*LITERAL][LITERAL:3]]
                         // Regex literal: first character
-                        "/([^\\*\\[/\\]|(\\u005c).+)"
+                        "/([^\\*\\[/\\]|(\\u005c).+|\\[.*?\\])"
                         // Regex litreal: following characters
-                        + "([^\\[/\\]|)*?/.",
+                        + "/([^\\[/\\]|(\\u005c).+|\\[.*?\\])*?/",
+                        // LITERAL:3 ends here
+
+                        // [[file:Scanner.org::*LITERAL][LITERAL:4]]
                         // Template literal
-                        "(?s:`.*?`)"
+                        "(?s:`([^`\\]|(\\u005c).+)*?`)"
                         );
-        // LITERAL:1 ends here
+        // LITERAL:4 ends here
 
         // [[file:Scanner.org::*IDENTIFIER_NAME][IDENTIFIER_NAME:1]]
         /**
