@@ -67,9 +67,16 @@ class Scanner {
                         );
         /**
          * - Numeric literals are case-insensitive.
+         *
          * - All literals have a word boundary between them and any other token.
+         *
          * - The sign before the number acts as a operator regardless if there's
          * just one number.
+         *
+         * - Many operators are lazy (with "?" at the end) because many of the
+         * - characters possible inside a literal are also possible outside it.
+         * - Therefore, unless it is matched in the regex with an escape ("\")
+         * - it'll define the end of the literal.
          */
         String LITERAL =
             String.join("|",
@@ -112,7 +119,17 @@ class Scanner {
                         + "|" + "\\" + CHARATER_ESCAPE_SEQUENCE
                         + ")*?['\"]",
                         // Regex literal
-                        "/.*?/",
+                        /**
+                         * The sequence "//" isn't an empty regex literal,
+                         * it's comment.
+                         *
+                         * U+005C is a backslash, which doesn't conflict with
+                         * the non-literal dot following it.
+                         */
+                        // Regex literal: first character
+                        "/([^\\*\\[/\\]|(\\u005c).+)"
+                        // Regex litreal: following characters
+                        + "([^\\[/\\]|)*?/.",
                         // Template literal
                         "(?s:`.*?`)"
                         );
