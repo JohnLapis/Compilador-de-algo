@@ -7,6 +7,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.text.ParseException;
 import java.util.List;
+import java.io.BufferedOutputStream;
+import java.io.DataOutputStream;
+import java.io.FileOutputStream;
 // imports:1 ends here
 
 // [[file:Compiler.org::*Compiler][Compiler:1]]
@@ -18,10 +21,19 @@ public class Compiler {
             throw new Exception();
         }
 
-        Path path = Paths.get(args[0]);
+        String inputFile = args[0];
+        Path path = Paths.get(inputFile);
         String code = String.join("\n", Files.readAllLines(path));
         List<String> tokenizedCode = Scanner.tokenize(code);
-        System.out.println("[ " + String.join(", ", tokenizedCode) + " ]");
+        String outputFile = "o.js";
+        try (
+             FileOutputStream fileOutputStream =
+                 new FileOutputStream(outputFile);
+             DataOutputStream outStream =
+                 new DataOutputStream(new BufferedOutputStream(fileOutputStream))) {
+            outStream.writeUTF(String.join(" ", tokenizedCode));
+        }
+        System.out.println(String.join(" ", tokenizedCode));
     }
 }
 // Compiler:1 ends here
