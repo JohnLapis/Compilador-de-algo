@@ -33,13 +33,13 @@ class Scanner {
         String PUNCTUATOR =
             String.join("|",
                         // Special handlings
-                        "!==?|!|\\?(\\.(?=\D)|\\?)?",
+                        "!==?|!|\\?(\\.(?=\\D)|\\?)?",
                         // Single punctuators
                         "\\(|\\)|\\[|\\]|\\{|\\}|,|\\.(\\.{2})?|;|:|~|\\",
                         // Punctuators with '='
                         "(\\+|-|\\*{1,2}|/|%|<{1,2}|>{1,3}|^|&|\\|)=|=>|={1,3}",
                         // Punctuators which may have repeatable character
-                        "\\+{1,2}|-{1,2}|\\*{1,2}|%|/|>{1,3}|<{1,2}|&{1,2}|\\|{1,2}"
+                        "\\+{1,2}|\\-{1,2}|\\*{1,2}|%|/|>{1,3}|<{1,2}|&{1,2}|\\|{1,2}"
                         );
         // PUNCTUATOR:1 ends here
 
@@ -60,8 +60,8 @@ class Scanner {
         // [[file:Scanner.org::*LITERAL][LITERAL:1]]
         String CHARATER_ESCAPE_SEQUENCE =
             String.join("|",
-                        "[^" + LINE_TERMINATOR + "\dxu]",
-                        "0(?!\d)",
+                        "[^" + LINE_TERMINATOR + "\\dxu]",
+                        "0(?!\\d)",
                         "x[0-9a-fA-F]{2}",
                         "u([0-9a-fA-F]{4}|)"
                         );
@@ -157,21 +157,21 @@ class Scanner {
             // Turn on Unicode_Character_Class flag
             "(?U)"
             // Valid starting character
-            + "[\p{L}\p{Nl}]+"
+            + "[\\p{L}\\p{Nl}]+"
             // Valid ending characters
-            + "[\p{L}\p{Nl}\\u200c\\200d]*";
+            + "[\\p{L}\\p{Nl}\\u200c\\u200d]*";
         // IDENTIFIER_NAME:1 ends here
 
         // [[file:Scanner.org::*matching][matching:1]]
         Pattern TOKEN =
             Pattern.compile(String.join("|",
                                         COMMENT,
-                                        LITERAL,
+                                       // LITERAL
                                         IDENTIFIER_NAME,
                                         LINE_TERMINATOR,
                                         PUNCTUATOR
                                         ));
-        Matcher matcher = pattern.matcher(code);
+        Matcher matcher = TOKEN.matcher(code);
         List<String> matches = new ArrayList<String>();
         while (matcher.find()) {
             String match = matcher.group();

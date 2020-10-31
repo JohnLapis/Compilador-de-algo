@@ -192,13 +192,13 @@ String COMMENT = "(?s:/\\*.*?\\*/)|//.*";
 String PUNCTUATOR =
     String.join("|",
                 // Special handlings
-                "!==?|!|\\?(\\.(?=\D)|\\?)?",
+                "!==?|!|\\?(\\.(?=\\D)|\\?)?",
                 // Single punctuators
                 "\\(|\\)|\\[|\\]|\\{|\\}|,|\\.(\\.{2})?|;|:|~|\\",
                 // Punctuators with '='
                 "(\\+|-|\\*{1,2}|/|%|<{1,2}|>{1,3}|^|&|\\|)=|=>|={1,3}",
                 // Punctuators which may have repeatable character
-                "\\+{1,2}|-{1,2}|\\*{1,2}|%|/|>{1,3}|<{1,2}|&{1,2}|\\|{1,2}"
+                "\\+{1,2}|\\-{1,2}|\\*{1,2}|%|/|>{1,3}|<{1,2}|&{1,2}|\\|{1,2}"
                 );
 #+end_src
 
@@ -247,8 +247,8 @@ In set notation:
 #+begin_src java :noweb-ref LITERAL
 String CHARATER_ESCAPE_SEQUENCE =
     String.join("|",
-                "[^" + LINE_TERMINATOR + "\dxu]",
-                "0(?!\d)",
+                "[^" + LINE_TERMINATOR + "\\dxu]",
+                "0(?!\\d)",
                 "x[0-9a-fA-F]{2}",
                 "u([0-9a-fA-F]{4}|)"
                 );
@@ -293,46 +293,46 @@ String LITERAL =
 
 - [-] how far word boudaries (~\b~) go?
 #+begin_src java :noweb-ref LITERAL
-                // String literal
-                /**
-                 * Each regex composing a string literal matches only
-                 * one character. The end result is that you have all
-                 * those possible characters being matched by the lazy
-                 * wildcard "*". And that's why it is wrapped in
-                 * parentheses.
-                 */
-                "['\"]("
-                // String literal: Prohibited characters
-                + "[^\\u005c\\u000d\\u000a]"
-                // String literal: Line continuation
-                + "|" + LINE_TERMINATOR + "(?<=\\)"
-                // String literal: Escape sequence
-                + "|" + "\\" + CHARATER_ESCAPE_SEQUENCE
-                + ")*?['\"]",
-                // Regex literal
-                /**
-                 * The sequence "//" isn't an empty regex literal,
-                 * it's comment.
-                 *
-                 * U+005C is a backslash, which doesn't conflict with
-                 * the non-literal dot following it.
-                 */
+// String literal
+/**
+ * Each regex composing a string literal matches only
+ * one character. The end result is that you have all
+ * those possible characters being matched by the lazy
+ * wildcard "*". And that's why it is wrapped in
+ * parentheses.
+ */
+"['\"]("
+// String literal: Prohibited characters
++ "[^\\u005c\\u000d\\u000a]"
+// String literal: Line continuation
++ "|" + LINE_TERMINATOR + "(?<=\\)"
+// String literal: Escape sequence
++ "|" + "\\" + CHARATER_ESCAPE_SEQUENCE
++ ")*?['\"]",
+// Regex literal
+/**
+ * The sequence "//" isn't an empty regex literal,
+ * it's comment.
+ *
+ * U+005C is a backslash, which doesn't conflict with
+ * the non-literal dot following it.
+ */
 #+end_src
 
 - [-] the regex flags should be optimized to match only IdentifierPart
 #+begin_src java :noweb-ref LITERAL
-                // Regex literal: first character
-                "/([^\\*\\[/\\]|(\\u005c).+|\\[.*?\\])"
-                // Regex litreal: following characters
-                + "/([^\\[/\\]|(\\u005c).+|\\[.*?\\])*?/",
+// Regex literal: first character
+"/([^\\*\\[/\\]|(\\u005c).+|\\[.*?\\])"
+// Regex litreal: following characters
++ "/([^\\[/\\]|(\\u005c).+|\\[.*?\\])*?/",
 #+end_src
 
 - [-] where should the substitution of the template literal be? i think it's in
   the parser
 #+begin_src java :noweb-ref LITERAL
-                // Template literal
-                "(?s:`([^`\\]|(\\u005c).+)*?`)"
-                );
+// Template literal
+"(?s:`([^`\\]|(\\u005c).+)*?`)"
+);
 #+end_src
 
 ** IDENTIFIER_NAME
@@ -355,9 +355,9 @@ String IDENTIFIER_NAME =
     // Turn on Unicode_Character_Class flag
     "(?U)"
     // Valid starting character
-    + "[\p{L}\p{Nl}]+"
+    + "[\\p{L}\\p{Nl}]+"
     // Valid ending characters
-    + "[\p{L}\p{Nl}\\u200c\\200d]*";
+    + "[\\p{L}\\p{Nl}\\u200c\\u200d]*";
 #+end_src
 
 ** matching
@@ -365,12 +365,12 @@ String IDENTIFIER_NAME =
 Pattern TOKEN =
     Pattern.compile(String.join("|",
                                 COMMENT,
-                                LITERAL,
+                               // LITERAL
                                 IDENTIFIER_NAME,
                                 LINE_TERMINATOR,
                                 PUNCTUATOR
                                 ));
-Matcher matcher = pattern.matcher(code);
+Matcher matcher = TOKEN.matcher(code);
 List<String> matches = new ArrayList<String>();
 while (matcher.find()) {
     String match = matcher.group();
