@@ -92,8 +92,11 @@ class Scanner {
                          * If starts with a dot, is followed by 1 or more digits.
                          *
                          * In both cases, the exponential part is optional.
+                         *
+                         * If starts with 0, is only followed by integers.
                          */
                         "(([1-9][0-9]*\\.?[0-9]*)|(\\.[0-9]+))([eE][+-]?[0-9]+)?",
+                        "0\\d*",
                         // Big integer decimal literal
                         "(0|[1-9][0-9]*)n",
                         // Binary literal
