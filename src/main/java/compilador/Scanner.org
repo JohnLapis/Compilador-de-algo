@@ -136,6 +136,8 @@ rnative to EXPRESSION
 in case a sequence of characters isn't matched by any of the valid sequences
 expressed via the regexes, there's a "unidentified-token" error. And care should be taken to
 avoid matching useless characters like whitespace, line terminators, etc.
+
+*** ! how to make sure nobody catches what the catch all should catch?
 ** ! create tests for invalid input
 ** ! pass some of the checking to the parser
 That's something quite obvious but it isn't so clear where to draw the line in
@@ -308,13 +310,16 @@ String LITERAL =
 // String literal: Prohibited characters
 + "[^\\u005c\\u000d\\u000a]"
 // String literal: Line continuation
-+ "|" + LINE_TERMINATOR + "(?<=(\\u005c))"
++ "|" + "(?<=(\\u005c))" + LINE_TERMINATOR
 // String literal: Escape sequence
 + "|" + "(\\u005c)" + CHARATER_ESCAPE_SEQUENCE
 + ")*?['\"]",
 #+end_src
 
 - [-] the regex flags should be optimized to match only IdentifierPart
+- idea for making the code clearer
+  "/" + PROHIBITED_CHARS_REGEX
++ "|(?<=(\\u005c))" + PROHIBITED_CHARS_REGEX,
 #+begin_src java :noweb-ref LITERAL
 // Regex literal
 /**
@@ -325,13 +330,18 @@ String LITERAL =
  * the non-literal dot following it.
  */
 // Regex literal: first character
-"/([^\\*\\[/(\\u005c)]|(\\u005c).+|\\[.*?\\])"
+"/([^/\\*\\+\\)\\]\\{\\}\\?]"
++ "|(?<=(\\u005c))[/\\*\\+\\)\\]\\{\\}\\?])"
 // Regex litreal: following characters
-+ "/([^\\[/(\\u005c)]|(\\u005c).+|\\[.*?\\])*?/",
++ "([^/]|(?<=(\\u005c))[/])*?(?<!\\u005c)/"
+// Flags
++ "i?g?m?s?u?y?",
 #+end_src
 
 - [-] where should the substitution of the template literal be? i think it's in
   the parser
+- it's not working
+it isn't being treated whole and is ignoring backslashes
 #+begin_src java :noweb-ref LITERAL
 // Template literal
 "(?s:`([^`(\\u005c)]|(\\u005c).+)*?`)"
@@ -367,19 +377,19 @@ String IDENTIFIER_NAME =
 #+begin_src java :noweb-ref Matching
 Pattern TOKEN =
     Pattern.compile(String.join("|",
-                                COMMENT,
+                                // COMMENT,
                                 LITERAL,
                                 IDENTIFIER_NAME,
-                                LINE_TERMINATOR,
-                                PUNCTUATOR
+                                LINE_TERMINATOR
+                                // PUNCTUATOR
                                 ));
 Matcher matcher = TOKEN.matcher(code);
 List<String> matches = new ArrayList<String>();
 while (matcher.find()) {
     String match = matcher.group();
-    if (match.contains("/*") || match.contains("//")) {
-        continue;
-    }
+    // if (match.contains("/*") || match.contains("//")) {
+    //     continue;
+    // }
     // System.out.println(matcher.start() + " " + matcher.end());
 
     matches.add(match);

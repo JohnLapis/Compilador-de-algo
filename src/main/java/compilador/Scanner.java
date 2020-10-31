@@ -136,9 +136,12 @@ class Scanner {
                          * the non-literal dot following it.
                          */
                         // Regex literal: first character
-                        "/([^\\*\\[/(\\u005c)]|(\\u005c).+|\\[.*?\\])"
+                        "/([^/\\*\\+\\)\\]\\{\\}\\?]"
+                        + "|(?<=(\\u005c))[/\\*\\+\\)\\]\\{\\}\\?])"
                         // Regex litreal: following characters
-                        + "/([^\\[/(\\u005c)]|(\\u005c).+|\\[.*?\\])*?/",
+                        + "([^/]|(?<=(\\u005c))[/])*?(?<!\\u005c)/"
+                        // Flags
+                        + "i?g?m?s?u?y?",
                         // LITERAL:3 ends here
 
                         // [[file:Scanner.org::*LITERAL][LITERAL:4]]
@@ -168,19 +171,19 @@ class Scanner {
         // [[file:Scanner.org::*matching][matching:1]]
         Pattern TOKEN =
             Pattern.compile(String.join("|",
-                                        COMMENT,
+                                        // COMMENT,
                                         LITERAL,
                                         IDENTIFIER_NAME,
-                                        LINE_TERMINATOR,
-                                        PUNCTUATOR
+                                        LINE_TERMINATOR
+                                        // PUNCTUATOR
                                         ));
         Matcher matcher = TOKEN.matcher(code);
         List<String> matches = new ArrayList<String>();
         while (matcher.find()) {
             String match = matcher.group();
-            if (match.contains("/*") || match.contains("//")) {
-                continue;
-            }
+            // if (match.contains("/*") || match.contains("//")) {
+            //     continue;
+            // }
             // System.out.println(matcher.start() + " " + matcher.end());
 
             matches.add(match);
