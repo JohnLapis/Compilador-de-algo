@@ -120,7 +120,7 @@ class Scanner {
                         // String literal: Prohibited characters
                         + "[^\\u005c\\u000d\\u000a]"
                         // String literal: Line continuation
-                        + "|" + LINE_TERMINATOR + "(?<=(\\u005c))"
+                        + "|" + "(?<=(\\u005c))" + LINE_TERMINATOR
                         // String literal: Escape sequence
                         + "|" + "(\\u005c)" + CHARATER_ESCAPE_SEQUENCE
                         + ")*?['\"]",
