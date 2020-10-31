@@ -10,6 +10,7 @@ import java.util.List;
 import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.io.FileOutputStream;
+import java.io.PrintWriter;
 // imports:1 ends here
 
 // [[file:Compiler.org::*Compiler][Compiler:1]]
@@ -26,14 +27,9 @@ public class Compiler {
         String code = String.join("\n", Files.readAllLines(path));
         List<String> tokenizedCode = Scanner.tokenize(code);
         String outputFile = "o.js";
-        try (
-             FileOutputStream fileOutputStream =
-                 new FileOutputStream(outputFile);
-             DataOutputStream outStream =
-                 new DataOutputStream(new BufferedOutputStream(fileOutputStream))) {
-            outStream.writeUTF(String.join(" ", tokenizedCode));
+        try (PrintWriter outputStream = new PrintWriter(outputFile)) {
+            outputStream.println(String.join(" ", tokenizedCode));
         }
-        System.out.println(String.join(" ", tokenizedCode));
     }
 }
 // Compiler:1 ends here
