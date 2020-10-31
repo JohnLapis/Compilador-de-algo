@@ -305,10 +305,14 @@ String LITERAL =
 // String literal: Prohibited characters
 + "[^\\u005c\\u000d\\u000a]"
 // String literal: Line continuation
-+ "|" + LINE_TERMINATOR + "(?<=\\)"
++ "|" + LINE_TERMINATOR + "(?<=(\\u005c))"
 // String literal: Escape sequence
-+ "|" + "\\" + CHARATER_ESCAPE_SEQUENCE
++ "|" + "(\\u005c)" + CHARATER_ESCAPE_SEQUENCE
 + ")*?['\"]",
+#+end_src
+
+- [-] the regex flags should be optimized to match only IdentifierPart
+#+begin_src java :noweb-ref LITERAL
 // Regex literal
 /**
  * The sequence "//" isn't an empty regex literal,
@@ -317,21 +321,17 @@ String LITERAL =
  * U+005C is a backslash, which doesn't conflict with
  * the non-literal dot following it.
  */
-#+end_src
-
-- [-] the regex flags should be optimized to match only IdentifierPart
-#+begin_src java :noweb-ref LITERAL
 // Regex literal: first character
-"/([^\\*\\[/\\]|(\\u005c).+|\\[.*?\\])"
+"/([^\\*\\[/(\\u005c)]|(\\u005c).+|\\[.*?\\])"
 // Regex litreal: following characters
-+ "/([^\\[/\\]|(\\u005c).+|\\[.*?\\])*?/",
++ "/([^\\[/(\\u005c)]|(\\u005c).+|\\[.*?\\])*?/",
 #+end_src
 
 - [-] where should the substitution of the template literal be? i think it's in
   the parser
 #+begin_src java :noweb-ref LITERAL
 // Template literal
-"(?s:`([^`\\]|(\\u005c).+)*?`)"
+"(?s:`([^`(\\u005c)]|(\\u005c).+)*?`)"
 );
 #+end_src
 
@@ -365,7 +365,7 @@ String IDENTIFIER_NAME =
 Pattern TOKEN =
     Pattern.compile(String.join("|",
                                 COMMENT,
-                               // LITERAL
+                                LITERAL,
                                 IDENTIFIER_NAME,
                                 LINE_TERMINATOR,
                                 PUNCTUATOR
@@ -375,7 +375,6 @@ List<String> matches = new ArrayList<String>();
 while (matcher.find()) {
     String match = matcher.group();
     if (match.contains("/*") || match.contains("//")) {
-        System.out.println("ignored");
         continue;
     }
     // System.out.println(matcher.start() + " " + matcher.end());

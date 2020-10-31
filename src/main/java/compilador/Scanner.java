@@ -117,10 +117,13 @@ class Scanner {
                         // String literal: Prohibited characters
                         + "[^\\u005c\\u000d\\u000a]"
                         // String literal: Line continuation
-                        + "|" + LINE_TERMINATOR + "(?<=\\)"
+                        + "|" + LINE_TERMINATOR + "(?<=(\\u005c))"
                         // String literal: Escape sequence
-                        + "|" + "\\" + CHARATER_ESCAPE_SEQUENCE
+                        + "|" + "(\\u005c)" + CHARATER_ESCAPE_SEQUENCE
                         + ")*?['\"]",
+                        // LITERAL:2 ends here
+
+                        // [[file:Scanner.org::*LITERAL][LITERAL:3]]
                         // Regex literal
                         /**
                          * The sequence "//" isn't an empty regex literal,
@@ -129,18 +132,15 @@ class Scanner {
                          * U+005C is a backslash, which doesn't conflict with
                          * the non-literal dot following it.
                          */
-                        // LITERAL:2 ends here
-
-                        // [[file:Scanner.org::*LITERAL][LITERAL:3]]
                         // Regex literal: first character
-                        "/([^\\*\\[/\\]|(\\u005c).+|\\[.*?\\])"
+                        "/([^\\*\\[/(\\u005c)]|(\\u005c).+|\\[.*?\\])"
                         // Regex litreal: following characters
-                        + "/([^\\[/\\]|(\\u005c).+|\\[.*?\\])*?/",
+                        + "/([^\\[/(\\u005c)]|(\\u005c).+|\\[.*?\\])*?/",
                         // LITERAL:3 ends here
 
                         // [[file:Scanner.org::*LITERAL][LITERAL:4]]
                         // Template literal
-                        "(?s:`([^`\\]|(\\u005c).+)*?`)"
+                        "(?s:`([^`(\\u005c)]|(\\u005c).+)*?`)"
                         );
         // LITERAL:4 ends here
 
@@ -166,7 +166,7 @@ class Scanner {
         Pattern TOKEN =
             Pattern.compile(String.join("|",
                                         COMMENT,
-                                       // LITERAL
+                                        LITERAL,
                                         IDENTIFIER_NAME,
                                         LINE_TERMINATOR,
                                         PUNCTUATOR
@@ -176,7 +176,6 @@ class Scanner {
         while (matcher.find()) {
             String match = matcher.group();
             if (match.contains("/*") || match.contains("//")) {
-                System.out.println("ignored");
                 continue;
             }
             // System.out.println(matcher.start() + " " + matcher.end());
